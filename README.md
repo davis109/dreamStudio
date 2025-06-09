@@ -1,4 +1,4 @@
-# DreamStudio - AI-Powered Visual Storytelling
+# DreamStudio - AI-Powered Visual Storytelling(not completed)
 
 DreamStudio is a web application where users can create visual stories with AI-generated images. Users input text descriptions for each scene, and the application automatically illustrates them using the Segmind API. It's perfect for creators, educators, storytellers, and anyone who wants to bring their stories to life visually.
 
