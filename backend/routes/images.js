@@ -50,7 +50,7 @@ const upload = multer({
 /**
  * @route   POST /api/images/generate
  * @desc    Generate an image using Segmind API
- * @access  Private
+ * @access  Public
  */
 router.post('/generate', [
   body('prompt')
@@ -127,7 +127,7 @@ router.post('/generate', [
     
     // Call Segmind API for image generation
     const response = await axios.post(
-      `${process.env.SEGMIND_API_URL}/sdxl`,
+      `${process.env.SEGMIND_API_URL}/txt2img`,
       {
         prompt: enhancedPrompt,
         negative_prompt: enhancedNegativePrompt,
@@ -137,9 +137,9 @@ router.post('/generate', [
         guidance_scale: 7.5,
         strength: 0.9,
         seed: Math.floor(Math.random() * 1000000),
-        img_width: 1024,
-        img_height: 1024,
-        refiner: true
+        img_width: 512,
+        img_height: 512,
+        model_id: 'sd1.5'
       },
       {
         headers: {
@@ -166,14 +166,7 @@ router.post('/generate', [
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     const imageUrl = `${baseUrl}/uploads/${uniqueFilename}`;
     
-    // Update user statistics
-    await User.findOneAndUpdate(
-      { firebaseUid: req.user.uid },
-      { 
-        $inc: { 'usage.imagesGenerated': 1 },
-        $set: { 'usage.lastActive': Date.now() }
-      }
-    );
+    // No user statistics update needed
     
     res.status(200).json({
       success: true,

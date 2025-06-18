@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { storyApi } from '../services/api';
-import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'recent', 'oldest'
-  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchStories = async () => {

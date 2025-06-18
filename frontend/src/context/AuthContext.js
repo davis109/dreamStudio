@@ -18,7 +18,17 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  // Provide a mock user to bypass authentication
+  const [currentUser] = useState({
+    displayName: 'Guest User',
+    email: 'guest@example.com',
+    photoURL: '',
+    emailVerified: true,
+    metadata: {
+      creationTime: new Date().toISOString(),
+      lastSignInTime: new Date().toISOString()
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   // Sign up with email and password
@@ -60,12 +70,11 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
+    // Skip the actual auth state monitoring and just set loading to false
+    setLoading(false);
+    
+    // Return empty function as cleanup
+    return () => {};
   }, []);
 
   const value = {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { storyApi, imageApi } from '../services/api';
+// API imports removed as they're not needed with bypassed authentication
 
 const EditStory = () => {
   const { id } = useParams();

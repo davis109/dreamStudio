@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { storyApi, imageApi } from '../services/api';
+// Import the API services
+import { imageApi, storyApi } from '../services/api';
 
 const CreateStory = () => {
   const navigate = useNavigate();
@@ -50,36 +51,11 @@ const CreateStory = () => {
       updatedScenes[index].generating = true;
       setScenes(updatedScenes);
       
-      // In a real app, this would call the Segmind API
-      // For demo purposes, we'll simulate the API call with a timeout
-      // const response = await imageApi.generateImage(sceneText, style);
+      // Make the actual API call to generate the image
+      const response = await imageApi.generateImage(sceneText, style);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Placeholder image URL based on the style
-      let placeholderImage;
-      switch (style) {
-        case 'anime':
-          placeholderImage = `https://via.placeholder.com/512x512/FF6B6B/FFFFFF?text=Anime:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-          break;
-        case 'sketch':
-          placeholderImage = `https://via.placeholder.com/512x512/6B66FF/FFFFFF?text=Sketch:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-          break;
-        case 'cyberpunk':
-          placeholderImage = `https://via.placeholder.com/512x512/00F5D4/000000?text=Cyberpunk:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-          break;
-        case 'fantasy':
-          placeholderImage = `https://via.placeholder.com/512x512/9F7AEA/FFFFFF?text=Fantasy:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-          break;
-        case 'watercolor':
-          placeholderImage = `https://via.placeholder.com/512x512/4FD1C5/FFFFFF?text=Watercolor:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-          break;
-        default: // realistic
-          placeholderImage = `https://via.placeholder.com/512x512/38B2AC/FFFFFF?text=Realistic:+${encodeURIComponent(sceneText.substring(0, 20))}...`;
-      }
-      
-      updatedScenes[index].image = placeholderImage;
+      // Update the scene with the generated image URL
+      updatedScenes[index].image = response.data.data.imageUrl;
       updatedScenes[index].generating = false;
       setScenes(updatedScenes);
       toast.success('Image generated successfully!');
@@ -109,21 +85,20 @@ const CreateStory = () => {
     try {
       setLoading(true);
       
-      // In a real app, this would save to the backend
-      // For demo purposes, we'll simulate the API call with a timeout
-      // const storyData = {
-      //   title,
-      //   style,
-      //   scenes: scenes.map((scene, index) => ({
-      //     text: scene.text,
-      //     image_url: scene.image,
-      //     sequence: index + 1
-      //   }))
-      // };
-      // const response = await storyApi.createStory(storyData);
+      // Prepare the story data
+      const storyData = {
+        title,
+        artStyle: style,
+        scenes: scenes.map((scene, index) => ({
+          text: scene.text,
+          imageUrl: scene.image,
+          sequence: index + 1
+        })),
+        isPublic: true // Make it public by default for guest mode
+      };
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Make the actual API call to create the story
+      const response = await storyApi.createStory(storyData);
       
       toast.success('Story created successfully!');
       navigate('/dashboard');

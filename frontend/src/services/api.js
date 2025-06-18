@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { auth } from './firebase';
 import { toast } from 'react-toastify';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -12,14 +11,9 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to add the auth token to requests
+// No authentication needed for requests
 api.interceptors.request.use(
-  async (config) => {
-    const user = auth.currentUser;
-    if (user) {
-      const token = await user.getIdToken();
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  (config) => {
     return config;
   },
   (error) => {

@@ -34,14 +34,14 @@ class ImageService {
         guidance_scale: options.guidanceScale || 7.5,
         strength: options.strength || 0.9,
         seed: options.seed || Math.floor(Math.random() * 1000000),
-        img_width: options.width || 1024,
-        img_height: options.height || 1024,
-        refiner: options.refiner !== undefined ? options.refiner : true
+        img_width: options.width || 512,
+        img_height: options.height || 512,
+        model_id: 'sd1.5'
       };
       
       // Call Segmind API for image generation
       const response = await axios.post(
-        `${process.env.SEGMIND_API_URL}/sdxl`,
+        `${process.env.SEGMIND_API_URL}/txt2img`,
         params,
         {
           headers: {

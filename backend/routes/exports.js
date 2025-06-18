@@ -12,7 +12,7 @@ const axios = require('axios');
 /**
  * @route   GET /api/exports/story/:id/pdf
  * @desc    Export a story as PDF
- * @access  Private
+ * @access  Public
  */
 router.get('/story/:id/pdf', [
   param('id').isMongoId().withMessage('Invalid story ID')
@@ -24,10 +24,7 @@ router.get('/story/:id/pdf', [
       return next(new ApiError('Story not found', 404));
     }
     
-    // Check if user owns the story or if it's public
-    if (story.userId !== req.user.uid && !story.isPublic) {
-      return next(new ApiError('Not authorized to access this story', 403));
-    }
+    // No authorization check needed
     
     // In a real implementation, we would generate a PDF here
     // For now, we'll just return a success message with story data
@@ -49,7 +46,7 @@ router.get('/story/:id/pdf', [
 /**
  * @route   GET /api/exports/story/:id/epub
  * @desc    Export a story as EPUB
- * @access  Private
+ * @access  Public
  */
 router.get('/story/:id/epub', [
   param('id').isMongoId().withMessage('Invalid story ID')
@@ -61,10 +58,7 @@ router.get('/story/:id/epub', [
       return next(new ApiError('Story not found', 404));
     }
     
-    // Check if user owns the story or if it's public
-    if (story.userId !== req.user.uid && !story.isPublic) {
-      return next(new ApiError('Not authorized to access this story', 403));
-    }
+    // No authorization check needed
     
     // In a real implementation, we would generate an EPUB here
     // For now, we'll just return a success message with story data
@@ -86,7 +80,7 @@ router.get('/story/:id/epub', [
 /**
  * @route   GET /api/exports/story/:id/images
  * @desc    Export all images from a story as a ZIP file
- * @access  Private
+ * @access  Public
  */
 router.get('/story/:id/images', [
   param('id').isMongoId().withMessage('Invalid story ID')
@@ -98,10 +92,7 @@ router.get('/story/:id/images', [
       return next(new ApiError('Story not found', 404));
     }
     
-    // Check if user owns the story or if it's public
-    if (story.userId !== req.user.uid && !story.isPublic) {
-      return next(new ApiError('Not authorized to access this story', 403));
-    }
+    // No authorization check needed
     
     // In a real implementation, we would generate a ZIP file with all images
     // For now, we'll just return a success message with image URLs

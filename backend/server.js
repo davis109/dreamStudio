@@ -10,7 +10,6 @@ const path = require('path');
 const storyRoutes = require('./routes/stories');
 const imageRoutes = require('./routes/images');
 const exportRoutes = require('./routes/exports');
-const authMiddleware = require('./middleware/auth');
 
 // Initialize express app
 const app = express();
@@ -26,9 +25,9 @@ app.use(morgan('dev')); // HTTP request logger
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
-app.use('/api/stories', authMiddleware, storyRoutes);
-app.use('/api/images', authMiddleware, imageRoutes);
-app.use('/api/exports', authMiddleware, exportRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/images', imageRoutes);
+app.use('/api/exports', exportRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

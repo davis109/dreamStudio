@@ -16,9 +16,9 @@ const Profile = () => {
 
   useEffect(() => {
     if (currentUser) {
-      setDisplayName(currentUser.displayName || '');
-      setEmail(currentUser.email || '');
-      setPhotoURL(currentUser.photoURL || '');
+      setDisplayName(currentUser?.displayName || '');
+      setEmail(currentUser?.email || '');
+      setPhotoURL(currentUser?.photoURL || '');
     }
   }, [currentUser]);
 
@@ -43,7 +43,7 @@ const Profile = () => {
   const handleEmailUpdate = async (e) => {
     e.preventDefault();
     
-    if (email === currentUser.email) {
+    if (email === currentUser?.email) {
       toast.info('New email must be different from your current email.');
       return;
     }
@@ -351,13 +351,13 @@ const Profile = () => {
                 <div>
                   <h3 className="text-sm font-medium text-gray-900">Account Created</h3>
                   <p className="text-sm text-gray-500">
-                    {currentUser?.metadata?.creationTime ? new Date(currentUser.metadata.creationTime).toLocaleDateString() : 'N/A'}
+                    {currentUser?.metadata?.creationTime ? new Date(currentUser?.metadata?.creationTime).toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-900">Last Sign In</h3>
                   <p className="text-sm text-gray-500">
-                    {currentUser?.metadata?.lastSignInTime ? new Date(currentUser.metadata.lastSignInTime).toLocaleDateString() : 'N/A'}
+                    {currentUser?.metadata?.lastSignInTime ? new Date(currentUser?.metadata?.lastSignInTime).toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
                 <div>

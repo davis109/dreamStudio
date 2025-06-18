@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
-  const { currentUser } = useAuth();
 
   // Animation variants
   const containerVariants = {
@@ -55,21 +53,12 @@ const Home = () => {
               DreamStudio turns your words into stunning visuals. Write your story, choose a style, and watch as AI brings your imagination to life.
             </motion.p>
             <motion.div variants={itemVariants}>
-              {currentUser ? (
-                <Link
-                  to="/create"
-                  className="btn-primary text-lg px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Create Your Story
-                </Link>
-              ) : (
-                <Link
-                  to="/register"
-                  className="btn-primary text-lg px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Get Started
-                </Link>
-              )}
+              <Link
+                to="/create"
+                className="btn-primary text-lg px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Create Your Story
+              </Link>
             </motion.div>
           </motion.div>
 
@@ -173,21 +162,12 @@ const Home = () => {
           <p className="text-xl mb-8 max-w-3xl mx-auto">
             Join thousands of storytellers, educators, and creators who are using DreamStudio to visualize their imagination.
           </p>
-          {currentUser ? (
-            <Link
-              to="/create"
-              className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Create Your Story
-            </Link>
-          ) : (
-            <Link
-              to="/register"
-              className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Sign Up for Free
-            </Link>
-          )}
+          <Link
+            to="/create"
+            className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Create Your Story
+          </Link>
         </div>
       </section>
     </div>

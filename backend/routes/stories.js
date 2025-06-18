@@ -10,15 +10,15 @@ const validateRequest = require('../middleware/validate');
 
 /**
  * @route   GET /api/stories
- * @desc    Get all stories for the authenticated user
- * @access  Private
+ * @desc    Get all stories
+ * @access  Public
  */
 router.get('/', async (req, res, next) => {
   try {
     const { limit = 10, page = 1, sort = '-createdAt', style } = req.query;
     
     // Build query
-    const query = { userId: req.user.uid };
+    const query = {};
     
     // Filter by art style if provided
     if (style) {
@@ -56,7 +56,7 @@ router.get('/', async (req, res, next) => {
 /**
  * @route   GET /api/stories/:id
  * @desc    Get a single story by ID
- * @access  Private
+ * @access  Public
  */
 router.get('/:id', [
   param('id').isMongoId().withMessage('Invalid story ID')
@@ -66,11 +66,6 @@ router.get('/:id', [
     
     if (!story) {
       return next(new ApiError('Story not found', 404));
-    }
-    
-    // Check if user owns the story or if it's public
-    if (story.userId !== req.user.uid && !story.isPublic) {
-      return next(new ApiError('Not authorized to access this story', 403));
     }
     
     res.status(200).json({
@@ -85,7 +80,7 @@ router.get('/:id', [
 /**
  * @route   POST /api/stories
  * @desc    Create a new story
- * @access  Private
+ * @access  Public
  */
 router.post('/', [
   body('title')
@@ -120,21 +115,12 @@ router.post('/', [
     // Create new story
     const story = await Story.create({
       title,
-      userId: req.user.uid,
+      userId: "anonymous",
       artStyle,
       scenes,
-      isPublic,
+      isPublic: true,
       tags
     });
-    
-    // Update user statistics
-    await User.findOneAndUpdate(
-      { firebaseUid: req.user.uid },
-      { 
-        $inc: { 'usage.storiesCreated': 1, 'usage.imagesGenerated': scenes.length },
-        $set: { 'usage.lastActive': Date.now() }
-      }
-    );
     
     res.status(201).json({
       success: true,
@@ -148,7 +134,7 @@ router.post('/', [
 /**
  * @route   PUT /api/stories/:id
  * @desc    Update a story
- * @access  Private
+ * @access  Public
  */
 router.put('/:id', [
   param('id').isMongoId().withMessage('Invalid story ID'),
@@ -182,37 +168,12 @@ router.put('/:id', [
       return next(new ApiError('Story not found', 404));
     }
     
-    // Check if user owns the story
-    if (story.userId !== req.user.uid) {
-      return next(new ApiError('Not authorized to update this story', 403));
-    }
-    
-    // Count new images if any were added
-    let newImagesCount = 0;
-    if (req.body.scenes) {
-      const existingImageUrls = story.scenes.map(scene => scene.imageUrl);
-      newImagesCount = req.body.scenes.filter(scene => 
-        !existingImageUrls.includes(scene.imageUrl)
-      ).length;
-    }
-    
     // Update story
     story = await Story.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       { new: true, runValidators: true }
     );
-    
-    // Update user statistics if new images were added
-    if (newImagesCount > 0) {
-      await User.findOneAndUpdate(
-        { firebaseUid: req.user.uid },
-        { 
-          $inc: { 'usage.imagesGenerated': newImagesCount },
-          $set: { 'usage.lastActive': Date.now() }
-        }
-      );
-    }
     
     res.status(200).json({
       success: true,
@@ -238,10 +199,7 @@ router.delete('/:id', [
       return next(new ApiError('Story not found', 404));
     }
     
-    // Check if user owns the story
-    if (story.userId !== req.user.uid) {
-      return next(new ApiError('Not authorized to delete this story', 403));
-    }
+    // No authorization check needed
     
     await story.deleteOne();
     
@@ -257,7 +215,7 @@ router.delete('/:id', [
 /**
  * @route   GET /api/stories/public
  * @desc    Get public stories
- * @access  Private (but shows public content)
+ * @access  Public
  */
 router.get('/public/featured', async (req, res, next) => {
   try {
